@@ -1,0 +1,3 @@
+{"Id":0,"Name":"Naill","Description":"It is Descr..","Price":350,"Duration":5.55}
+
+{"str":"Bob","modelName":2,"calledMethod":1,"methodProperties":null}
