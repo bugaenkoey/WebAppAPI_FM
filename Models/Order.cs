@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WebAppAPI_FM.Models
 {
-    public class Order
+    public class Order : IEntity
     {
         public int Id { get; set; }
         public Service Service { get; set; }
@@ -16,5 +16,6 @@ namespace WebAppAPI_FM.Models
         public DateTime? DateTime { get; set; }
         public string? Note { get; set; }
         public string? Comment { get; set; }
+       // public int Id { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
 }

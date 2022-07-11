@@ -34,6 +34,7 @@ namespace WebAppAPI_FM.Controllers
         //   public string Post(string json)
         //    public IEnumerable<string> Post(string json)
         public string Post(string json)
+     // public ResponseData Post(string json)
         {
             /*
              RequestData requestData = new("Evgen");
@@ -60,6 +61,7 @@ namespace WebAppAPI_FM.Controllers
                  string strRqDt = JsonSerializer.Serialize(requestData);*/
             //      json = strRqDt;
 
+            string response = String.Empty;
             RequestData requestData1 = JsonSerializer.Deserialize<RequestData>(json);
             //        switch (JsonSerializer.Deserialize<RequestData>(json).modelName)
             switch (requestData1.modelName)
@@ -68,41 +70,133 @@ namespace WebAppAPI_FM.Controllers
                     /*     responseData.success = true;
                          responseData.data = (object[])ServiceModel(calledMethod, properties);
                          return JsonSerializer.Serialize(responseData);*/
-                  return  ServiceModel(requestData1);
-                    break;
-                case ModelName.User:
+
+                    response= ServiceModel(requestData1);
 
                     break;
+                case ModelName.User:
+                    response= UserModel(requestData1);
+                    break;
                 case ModelName.Order:
+                    response = OrderModel(requestData1);
                     break;
                 default:
-                    // return "responseData";
+                    response= "responseData Default";
                     break;
             }
             // return "responseData";
-            return "";
+            return response;
 
         }
 
-        private string ServiceModel(RequestData requestData)
+        private string OrderModel(RequestData requestData)
         {
             string response = String.Empty;
             {
                 using FavoriteMasterContext db = new FavoriteMasterContext();
                 switch (requestData.calledMethod)
                 {
-                    case CalledMethod.GET:
-                        response = JsonSerializer.Serialize(db.Services.ToList());
+                    case CalledMethod.Get:
+                        response = JsonSerializer.Serialize(db.Orders.ToList());
                         break;
-                    case CalledMethod.POST:
-
-
+                    case CalledMethod.Add:
+                        response = "TO DO ";
+                        break;
 
                     default:
                         response = "Bed request...";
                         break;
-
                 }
+            }
+            return response;
+        }
+
+        private string UserModel(RequestData requestData)
+        {
+            string response = String.Empty;
+            {
+                using FavoriteMasterContext db = new FavoriteMasterContext();
+                switch (requestData.calledMethod)
+                {
+                    case CalledMethod.Get:
+                        response = JsonSerializer.Serialize(db.Users.ToList());
+                        break;
+                    case CalledMethod.Add:
+                        response = "TO DO ";
+                        break;
+
+                    default:
+                        response = "Bed request...";
+                        break;
+                }
+            }
+            return response;
+        }
+
+        private string ServiceModel(RequestData requestData)
+        {
+            string response = String.Empty;
+        //  string obj=  requestData.methodProperties;
+            Service service = JsonSerializer.Deserialize<Service>(requestData.methodProperties.ToString());
+            {
+                using FavoriteMasterContext db = new FavoriteMasterContext();
+               
+                switch (requestData.calledMethod)
+                {
+                    case CalledMethod.Get:
+
+                        response = JsonSerializer.Serialize(db.Services.ToList());
+                        break;
+                    case CalledMethod.GetId:
+                        response = JsonSerializer.Serialize(db.Services.Find(service.Id));
+                        break;
+                    case CalledMethod.Add:
+                        db.Services.Add(service);
+                        db.SaveChanges();
+                        response = JsonSerializer.Serialize(db.Services.ToList());
+                        break;
+                    case CalledMethod.Del:
+                        Service serviceid = db.Services.Find(service.Id);
+                        // получаем первый объект
+                        if (serviceid != null)
+                        {
+                            //удаляем объект
+                            db.Services.Remove(serviceid);
+                            db.SaveChanges();
+                        }
+                        if (db.Services.Find(service.Id)==null)
+                        {
+                            response = $"{service.Id} Deleted";
+                        }
+                        break;
+                    case CalledMethod.Edit:
+
+                        Service serviceR = db.Services.Find(service.Id);
+                        if (serviceR != null)
+                        {
+                            serviceR.Name = service.Name;
+                            serviceR.Description = service.Description;
+                            serviceR.Price = service.Price;
+                            serviceR.Duration = service.Duration;
+
+                            //обновляем объект
+                            db.Services.Update(serviceR);
+                            db.SaveChanges();
+                       // response = $"{service.Id} Update";
+
+                            response = JsonSerializer.Serialize(db.Services.Find(service.Id));
+                        }
+                        break;
+                    case CalledMethod.GetBetweenDates:
+
+                        response = "TO DO";
+                        break;
+                    default:
+
+                        response = "Bed request...";
+                        break;
+                }
+
             }
 
             return response;

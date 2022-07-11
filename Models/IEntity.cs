@@ -3,14 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebAppAPI_FM
+namespace WebAppAPI_FM.Models
 {
-    public enum ModelName
+    interface IEntity
     {
-        Service,
-        User,
-        Order
+        public int Id { get; set; }
     }
-   
-
 }

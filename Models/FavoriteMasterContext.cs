@@ -23,8 +23,8 @@ namespace WebAppAPI_FM.Models
         {
             //string StringConect = @"Data Source=.\SQLEXPRESS;Integrated Security=True;";
 
-            //  optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=FavoriteMaster;Trusted_Connection=True;");
-            optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS;Database=FavoriteMaster;Trusted_Connection=True;");
+              optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=FavoriteMaster;Trusted_Connection=True;");
+           // optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS;Database=FavoriteMaster;Trusted_Connection=True;");
         }
     }
 }

@@ -7,10 +7,31 @@ namespace WebAppAPI_FM
 {
     public enum CalledMethod
     {
-        GET,
-        GETid,
-        POST,
-        PUT,
-        DELETE
+        //GET,
+        //GETid,
+        //POST,
+        //PUT,
+        //DELETE
+
+
+        Get,
+        GetId,
+        Add,
+        Del,
+        Edit,
+        GetBetweenDates
+
     }
+
 }
+/*
+   enum CalledMethod
+   {
+   Get ="Get",
+   GetId="GetId",
+   Add="Add",
+   Del="Del",
+   Edit="Edit",
+   GetBetweenDates="GetBetweenDates"
+}
+    */

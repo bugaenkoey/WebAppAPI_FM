@@ -1,3 +1,18 @@
 {"Id":0,"Name":"Naill","Description":"It is Descr..","Price":350,"Duration":5.55}
 
 {"str":"Bob","modelName":2,"calledMethod":1,"methodProperties":null}
+
+{}
+
+{"str":"Bob","modelName":0,"calledMethod":2,"methodProperties":
+{"Name":"Naill","Description":"It is Descr..","Price":350,"Duration":5.55}}
+
+
+{"str":"Bob","modelName":0,"calledMethod":1,"methodProperties":
+{"Id":5}}
+
+{"str":"Bob","modelName":0,"calledMethod":3,"methodProperties":
+{"Id":4}}
+
+{"str":"Bob","modelName":0,"calledMethod":4,"methodProperties":
+{"Id":1,"Name":"Naill","Description":"It is Descr..","Price":350,"Duration":5.55}}

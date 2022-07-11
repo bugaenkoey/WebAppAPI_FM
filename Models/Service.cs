@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WebAppAPI_FM.Models
 {
-    public class Service
+    public class Service : IEntity
     {
         public int Id { get; set; }
         public string Name { get; set; }
