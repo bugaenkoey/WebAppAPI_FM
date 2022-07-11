@@ -182,6 +182,7 @@ namespace WebAppAPI_FM.Controllers
                             //обновляем объект
                             db.Services.Update(serviceR);
                             db.SaveChanges();
+
                        // response = $"{service.Id} Update";
 
                             response = JsonSerializer.Serialize(db.Services.Find(service.Id));
