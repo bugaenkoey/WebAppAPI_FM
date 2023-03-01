@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WebAppAPI_FM
 {
-    public enum CalledMethod
+    public enum  CalledMethod
     {
         //GET,
         //GETid,
@@ -13,7 +13,7 @@ namespace WebAppAPI_FM
         //PUT,
         //DELETE
 
-
+        Error,
         Get,
         GetId,
         Add,

@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,172 +30,364 @@ namespace WebAppAPI_FM.Controllers
             return "value";
         }
 
+        [HttpGet("get-between-dates")]
+
+        public string GetBetweenDate(DateTime start, DateTime end)
+        {
+            int p1 = 0;
+            int p2 = 3;
+           //  start = new  DateTime("20.08.2019 00:00:00");
+            //  DateTime[] between = JsonSerializer.Deserialize<DateTime[]>(requestData.methodProperties.ToString());
+            
+            using FavoriteMasterContext db = new FavoriteMasterContext();
+
+            List<Order> orders = db.Orders
+                       .Where(p => p.DateTime >= start && p.DateTime <= end)
+                       .Skip(p1)
+                       .Take(p2)
+                       .OrderBy(p => p.DateTime)
+                       .ToList();
+
+            return JsonSerializer.Serialize(orders);
+        }
+
+
         // POST api/<ValuesController>
         [HttpPost]
         /*  public void Post([FromBody] string json)*/
-        //   public string Post(string json)
         //    public IEnumerable<string> Post(string json)
         public string Post(string json)
-     // public ResponseData Post(string json)
+        // public ResponseData Post(string json)
         {
-            /*
-             RequestData requestData = new("Evgen");
-             requestData.modelName = ModelName.Service;
-            requestData.calledMethod = CalledMethod.GET;
-         requestData.methodProperties = null;
+           
+            RequestData requestData = JsonSerializer.Deserialize<RequestData>(json);
 
-             string json2 = JsonSerializer.Serialize(requestData);
- */
-            //    string rd = JsonSerializer.Serialize(requestData);
-            //  rd = "{\"apiKey\":\"[ВАШ КЛЮЧ]\",\"modelName\":\"Common\",\"calledMethod\":\"getPalletsList\",\"methodProperties\":{}}";
-            //var str = JsonSerializer.Deserialize<RequestData>(json);
+            // ModelName modelName = ParceModelName(requestData);
 
-            //     return json4;
-            /*   
-               CalledMethod calledMethod = JsonSerializer.Deserialize<RequestData>(json).calledMethod;
-               var properties = JsonSerializer.Deserialize<RequestData>(json).methodProperties;
-                       ResponseData responseData = new ResponseData();
-   */
-            /*     RequestData requestData = new RequestData();
-                 requestData.modelName = ModelName.Service;
-                 requestData.calledMethod = CalledMethod.GET;
-                 requestData.methodProperties =   "it is StringTest!";
-                 string strRqDt = JsonSerializer.Serialize(requestData);*/
-            //      json = strRqDt;
+
+            using FavoriteMasterContext db = new FavoriteMasterContext();
+            IEntityType entityType = db.Model.FindEntityType(typeof(IEntity));
+
+            DbSet<IEntity> vr = (DbSet<IEntity>)db.Model.FindEntityType($"Orders");
 
             string response = String.Empty;
-            RequestData requestData1 = JsonSerializer.Deserialize<RequestData>(json);
-            //        switch (JsonSerializer.Deserialize<RequestData>(json).modelName)
-            switch (requestData1.modelName)
+            switch (ParseModelName(requestData))
             {
                 case ModelName.Service:
-                    /*     responseData.success = true;
-                         responseData.data = (object[])ServiceModel(calledMethod, properties);
-                         return JsonSerializer.Serialize(responseData);*/
-
-                    response= ServiceModel(requestData1);
-
+                    response = ModelService(requestData);
                     break;
                 case ModelName.User:
-                    response= UserModel(requestData1);
+                    response = ModelUser(requestData);
                     break;
                 case ModelName.Order:
-                    response = OrderModel(requestData1);
+                    response = ModelOrder(requestData);
                     break;
                 default:
-                    response= "responseData Default";
+                    response = "responseData Error";
                     break;
             }
-            // return "responseData";
             return response;
-
         }
-
-        private string OrderModel(RequestData requestData)
+        private ModelName ParseModelName(RequestData requestData)
         {
-            string response = String.Empty;
+            ModelName modelName;
+            try
             {
-                using FavoriteMasterContext db = new FavoriteMasterContext();
-                switch (requestData.calledMethod)
-                {
-                    case CalledMethod.Get:
-                        response = JsonSerializer.Serialize(db.Orders.ToList());
-                        break;
-                    case CalledMethod.Add:
-                        response = "TO DO ";
-                        break;
-
-                    default:
-                        response = "Bed request...";
-                        break;
-                }
+                modelName = (ModelName)Enum.Parse(typeof(ModelName), requestData.modelName);
             }
-            return response;
-        }
-
-        private string UserModel(RequestData requestData)
-        {
-            string response = String.Empty;
+            catch (Exception)
             {
-                using FavoriteMasterContext db = new FavoriteMasterContext();
-                switch (requestData.calledMethod)
-                {
-                    case CalledMethod.Get:
-                        response = JsonSerializer.Serialize(db.Users.ToList());
-                        break;
-                    case CalledMethod.Add:
-                        response = "TO DO ";
-                        break;
-
-                    default:
-                        response = "Bed request...";
-                        break;
-                }
+                modelName = ModelName.Error;
+                throw new Exception("Enum.IsDefined(typeof(ModelName) = true");
             }
-            return response;
+
+            return modelName;
         }
 
-        private string ServiceModel(RequestData requestData)
+        private CalledMethod ParseCalledMethod(RequestData requestData)
         {
-            string response = String.Empty;
-        //  string obj=  requestData.methodProperties;
-            Service service = JsonSerializer.Deserialize<Service>(requestData.methodProperties.ToString());
+            CalledMethod method;
+            try
             {
-                using FavoriteMasterContext db = new FavoriteMasterContext();
-               
-                switch (requestData.calledMethod)
+                method = (CalledMethod)Enum.Parse(typeof(CalledMethod), requestData.calledMethod);
+            }
+            catch (Exception)
+            {
+                //method = CalledMethod.Error;
+                Console.WriteLine("ERROR CalledMethod = Not found");
+                //return "ERROR CalledMethod = Not found";
+                method = CalledMethod.Error;
+
+            }
+            return method;
+        }
+        private string ModelOrder(RequestData requestData)
+        {
+
+            //  CalledMethod method = ParseCalledMethod(requestData);
+
+            string response = String.Empty;
+
+            Order order = JsonSerializer.Deserialize<Order>(requestData.methodProperties.ToString());
+
+            using FavoriteMasterContext db = new FavoriteMasterContext();
+            var table = db.Orders;
+
+            {
+
+                switch (ParseCalledMethod(requestData))
                 {
                     case CalledMethod.Get:
-
-                        response = JsonSerializer.Serialize(db.Services.ToList());
+                      //  response = JsonSerializer.Serialize(table.ToList());
+                        response = Get(requestData);
                         break;
+
                     case CalledMethod.GetId:
-                        response = JsonSerializer.Serialize(db.Services.Find(service.Id));
+                        response = JsonSerializer.Serialize(table.Find(order.Id));
                         break;
+
                     case CalledMethod.Add:
-                        db.Services.Add(service);
+                        table.Add(order);
                         db.SaveChanges();
-                        response = JsonSerializer.Serialize(db.Services.ToList());
+                        response = JsonSerializer.Serialize(table.Find(order.Id));
                         break;
+
                     case CalledMethod.Del:
-                        Service serviceid = db.Services.Find(service.Id);
-                        // получаем первый объект
-                        if (serviceid != null)
+                        Order orderR = table.Find(order.Id);
+
+                        if (orderR != null)
                         {
-                            //удаляем объект
-                            db.Services.Remove(serviceid);
+                            table.Remove(orderR);
                             db.SaveChanges();
                         }
-                        if (db.Services.Find(service.Id)==null)
+
+                        if (table.Find(order.Id) == null)
+                        {
+                            response = $"{order.Id} Deleted";
+                        }
+                        break;
+
+                    case CalledMethod.Edit:
+
+                        Order orderE = table.Find(order.Id);
+                        if (orderE != null)
+                        {
+                            orderE.Service = order.Service;
+                            orderE.ServiceId = order.ServiceId;
+                            orderE.User = order.User;
+                            orderE.UserId = order.UserId;
+                            orderE.Done = order.Done;
+                            orderE.DateTime = order.DateTime;
+                            orderE.Note = order.Note;
+                            orderE.Comment = order.Comment;
+
+                            table.Update(order);
+                            db.SaveChanges();
+
+                            response = JsonSerializer.Serialize(table.Find(order.Id));
+                        }
+                        break;
+
+                    case CalledMethod.GetBetweenDates:
+                        //     response = "TO DO GetBetweenDates ...";
+
+                           response = GetBetweenDates(requestData);
+
+                        break;
+
+                    case CalledMethod.Error:
+                        response = "Error Method...";
+                        break;
+
+                    default:
+                        response = "Bed request...";
+                        break;
+                }
+
+            }
+
+            return response;
+        }
+
+        private string Get(RequestData requestData)
+        {
+
+            Order order = JsonSerializer.Deserialize<Order>(requestData.methodProperties.ToString());
+
+            using FavoriteMasterContext db = new FavoriteMasterContext();
+
+
+
+            var table = db.Orders;
+
+            return JsonSerializer.Serialize(table.ToList());
+        }
+
+
+            private string GetBetweenDates(RequestData requestData)
+        {
+            DateTime[] between = JsonSerializer.Deserialize<DateTime[]>(requestData.methodProperties.ToString());
+            
+            using FavoriteMasterContext db = new FavoriteMasterContext();
+
+            List<Order> orders =  db.Orders
+                       .Where(p => p.DateTime >= between[0] && p.DateTime <= between[1])
+                       .ToList();
+
+            return JsonSerializer.Serialize(orders);
+        }
+
+        private string ModelUser(RequestData requestData)
+        {
+
+
+            string response = String.Empty;
+
+            User user = JsonSerializer.Deserialize<User>(requestData.methodProperties.ToString());
+
+            using FavoriteMasterContext db = new FavoriteMasterContext();
+            var table = db.Users;
+
+            {
+
+                switch (ParseCalledMethod(requestData))
+                {
+                    case CalledMethod.Get:
+                        response = JsonSerializer.Serialize(table.ToList());
+                        break;
+
+                    case CalledMethod.GetId:
+                        response = JsonSerializer.Serialize(table.Find(user.Id));
+                        break;
+
+                    case CalledMethod.Add:
+                        table.Add(user);
+                        db.SaveChanges();
+                        response = JsonSerializer.Serialize(table.Find(user.Id));
+                        break;
+
+                    case CalledMethod.Del:
+                        User userR = table.Find(user.Id);
+
+                        if (userR != null)
+                        {
+                            table.Remove(userR);
+                            db.SaveChanges();
+                        }
+
+                        if (table.Find(user.Id) == null)
+                        {
+                            response = $"{user.Id} Deleted";
+                        }
+                        break;
+
+                    case CalledMethod.Edit:
+                        User userE = table.Find(user.Id);
+                        if (userE != null)
+                        {
+                            userE.Name = user.Name;
+                            userE.surname = user.surname;
+                            userE.phone = user.phone;
+                            userE.orders = user.orders;
+
+                            table.Update(user);
+                            db.SaveChanges();
+
+                            response = JsonSerializer.Serialize(table.Find(user.Id));
+                        }
+                        break;
+
+                    //case CalledMethod.GetBetweenDates:
+
+                    //    response = "TO DO GetBetweenDates ...";
+                    //    break;
+
+                    case CalledMethod.Error:
+                        response = "Error Method...";
+                        break;
+
+                    default:
+                        response = "Bed request...";
+                        break;
+                }
+
+            }
+
+            return response;
+        }
+
+        private string ModelService(RequestData requestData)
+        {
+
+
+            string response = String.Empty;
+
+            Service service = JsonSerializer.Deserialize<Service>(requestData.methodProperties.ToString());
+
+            using FavoriteMasterContext db = new FavoriteMasterContext();
+            var table = db.Services;
+
+            {
+
+                switch (ParseCalledMethod(requestData))
+                {
+                    case CalledMethod.Get:
+                        response = JsonSerializer.Serialize(table.ToList());
+                        break;
+
+                    case CalledMethod.GetId:
+                        response = JsonSerializer.Serialize(table.Find(service.Id));
+                        break;
+
+                    case CalledMethod.Add:
+                        table.Add(service);
+                        db.SaveChanges();
+                        response = JsonSerializer.Serialize(table.Find(service.Id));
+                        break;
+
+                    case CalledMethod.Del:
+                        Service serviceR = table.Find(service.Id);
+
+                        if (serviceR != null)
+                        {
+                            table.Remove(serviceR);
+                            db.SaveChanges();
+                        }
+
+                        if (table.Find(service.Id) == null)
                         {
                             response = $"{service.Id} Deleted";
                         }
                         break;
+
                     case CalledMethod.Edit:
-
-                        Service serviceR = db.Services.Find(service.Id);
-                        if (serviceR != null)
+                        Service serviceE = table.Find(service.Id);
+                        if (serviceE != null)
                         {
-                            serviceR.Name = service.Name;
-                            serviceR.Description = service.Description;
-                            serviceR.Price = service.Price;
-                            serviceR.Duration = service.Duration;
 
-                            //обновляем объект
-                            db.Services.Update(serviceR);
+                            serviceE.Name = service.Name;
+                            serviceE.Description = service.Description;
+                            serviceE.Price = service.Price;
+                            serviceE.Duration = service.Duration;
+
+
+                            table.Update(serviceE);
                             db.SaveChanges();
 
-                       // response = $"{service.Id} Update";
-
-                            response = JsonSerializer.Serialize(db.Services.Find(service.Id));
+                            response = JsonSerializer.Serialize(table.Find(service.Id));
                         }
                         break;
-                    case CalledMethod.GetBetweenDates:
 
-                        response = "TO DO";
+                    //case CalledMethod.GetBetweenDates:
+
+                    //    response = "TO DO GetBetweenDates ...";
+                    //    break;
+
+                    case CalledMethod.Error:
+                        response = "Error Method...";
                         break;
-                    default:
 
+                    default:
                         response = "Bed request...";
                         break;
                 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -30,6 +31,36 @@ namespace WebAppAPI_FM.Controllers
             return db.Orders.Find(id);
         }
 
+        [HttpPost("btween")]
+        public IEnumerable<Order> GetBetweenDates( string betweenDates)
+        {
+
+            DateTime[] between = JsonSerializer.Deserialize<DateTime[]>(betweenDates);
+
+            using FavoriteMasterContext db = new FavoriteMasterContext();
+
+            List<Order> orders = db.Orders
+                       .Where(p => p.DateTime >= between[0] && p.DateTime <= between[1])
+                       .ToList();
+
+            return orders;
+        }
+
+        [HttpPost("notbetween")]
+        public IEnumerable<Order> GetNotBetweenDates(string notbetween)
+        {
+
+            DateTime[] between = JsonSerializer.Deserialize<DateTime[]>(notbetween);
+
+            using FavoriteMasterContext db = new FavoriteMasterContext();
+
+            List<Order> orders = db.Orders
+                       .Where(p => p.DateTime <= between[0] || p.DateTime >= between[1])
+                       .ToList();
+
+            return orders;
+        }
+
         // POST api/<OrderController>
         [HttpPost]
         public void Post([FromBody] Order order)
@@ -38,6 +69,7 @@ namespace WebAppAPI_FM.Controllers
             db.Orders.Add(order);
             db.SaveChanges();
         }
+
 
         // PUT api/<OrderController>/5
         [HttpPut("{id}")]

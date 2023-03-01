@@ -32,6 +32,13 @@ namespace WebAppAPI_FM
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAppAPI_FM", Version = "v1" });
             });
+            //+++++++++++++++++
+            services.AddCors(
+             options => options.AddPolicy("devCors", opts => opts
+             .AllowAnyOrigin()
+             .AllowAnyHeader()
+             .AllowAnyMethod()));
+            //-------------
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,6 +49,11 @@ namespace WebAppAPI_FM
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAppAPI_FM v1"));
+             
+                //+++++++++++++++++++++++++++++++++
+
+                app.UseCors("devCors");
+                //-----------------------------------
             }
 
             app.UseHttpsRedirection();

@@ -16,3 +16,98 @@
 
 {"str":"Bob","modelName":0,"calledMethod":4,"methodProperties":
 {"Id":1,"Name":"Naill","Description":"It is Descr..","Price":350,"Duration":5.55}}
+
+
+==============
+
+{"str":"Bob","modelName":0,"calledMethod":0,"methodProperties":null}
+
+{"str":"Bob","modelName":0,"calledMethod":"Get","methodProperties": {}}
+
+{"str":"Bob","modelName":0,"calledMethod":"GetId","methodProperties": {"Id":5}}
+
+======================== Service =========
+
+
+{"apiKey":"Bob","modelName":"Service","calledMethod":"Get","methodProperties": {}}
+
+{"apiKey":"Bob","modelName":"Service","calledMethod":"GetId","methodProperties": 
+{"Id":6}}
+
+{"apiKey":"Bob","modelName":"Service","calledMethod":"Add","methodProperties":
+{"Name":"Frenth","Description":"It is frentch..","Price":550,"Duration":6.10}}
+
+
+{"apiKey":"Bob","modelName":"Service","calledMethod":"Edit","methodProperties":
+{"Id":7,"Name":"Frenth8","Description":"It is frentch8..","Price":850,"Duration":8.10}}
+
+
+{"apiKey":"Bob","modelName":"Service","calledMethod":"Del","methodProperties":
+{"Id":7}}
+
+========================= User =========
+
+{"apiKey":"Bob","modelName":"User","calledMethod":"Get","methodProperties": 
+{}}
+
+{"apiKey":"Bob","modelName":"User","calledMethod":"GetId","methodProperties": 
+{"Id":1}}
+
+{"apiKey":"Bob","modelName":"User","calledMethod":"Add","methodProperties": 
+{"Name":"admin1","surname":"admin1","phone":1134567890,"orders":[]}}
+
+{"apiKey":"Bob","modelName":"User","calledMethod":"Add","methodProperties": 
+{"Name":"admin1","surname":"admin1","phone":1134567890,"orders":[
+{
+"Id":1,
+"Service":null,
+"ServiceId":1,
+"UserId":1,
+"User":null,
+"Done":false,
+"DateTime":"2019-08-20T00:00:00",
+"Note":"testNote",
+"Comment":"testComment"}
+}
+]}}
+
+{"apiKey":"Bob","modelName":"User","calledMethod":"Edit","methodProperties": 
+{}}
+
+{"apiKey":"Bob","modelName":"User","calledMethod":"Del","methodProperties": 
+{"Id":1}}
+
+============== Order ==============
+
+{"apiKey":"Bob","modelName":"Order","calledMethod":"Get","methodProperties": 
+{}}
+
+{"apiKey":"Bob","modelName":"Order","calledMethod":"GetId","methodProperties": 
+{"Id":1}}
+
+{"apiKey":"Bob","modelName":"Order","calledMethod":"Add","methodProperties": 
+{
+"Id":1,
+"Service":null,
+"ServiceId":1,
+"UserId":1,
+"User":null,
+"Done":false,
+"DateTime":"2019-08-20T00:00:00",
+"Note":"testNote",
+"Comment":"testComment"}
+}
+
+ {"apiKey":"Bob","modelName":"Order","calledMethod":"GetBetweenDates","methodProperties": 
+ ["2000-01-20T00:00:00","2005-08-20T00:00:00"]}
+
+
+
+ ["2000-01-20T00:00:00","2005-08-20T00:00:00"]
+
+2019-08-20T00:00:00
+----------
+
+{"apiKey":"Bob","modelName":"User","calledMethod":"Add","methodProperties":  
+{"Name":"admin1","surname":"admin1","phone":"1134567890","orders": 
+[{"ServiceId":1, "Done":false, "DateTime":"2019-08-20T00:00:00", "Note":"testNote", "Comment":"testComment"}]}

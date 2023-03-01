@@ -9,7 +9,8 @@ namespace WebAppAPI_FM
     {
         Service,
         User,
-        Order
+        Order,
+        Error
     }
    
 
